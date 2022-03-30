@@ -9,7 +9,11 @@ const cookieparser = require('cookie-parser');
 // IMPORT ROUTES
 const authRoute = require('./routes/auth');
 
-app.use(cors());
+var corsOptions = {
+	origin: 'http://localhost:3000',
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(cookieparser());
@@ -23,11 +27,12 @@ app.use('/api/auth', authRoute);
 mongoose
 	.connect(process.env.MONGO_URI)
 	.then(() => {
-		console.log('connected to data base');
+		console.log('Connected to database');
+
 		app.listen(process.env.PORT, () => {
-			console.log(`Server running on PORT:${process.env.PORT}`);
+			console.log(`Server running on port ${process.env.PORT}`);
 		});
 	})
-	.catch((err) => {
-		console.log(err);
+	.catch((error) => {
+		console.log(error);
 	});

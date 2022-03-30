@@ -7,13 +7,6 @@ const jwt = require('jsonwebtoken');
 const validateRegisterInput = require('../validation/registerValidation');
 const requiresAuth = require('../middleware/permissions');
 
-// @route  GET /api/auth/test
-// @desc Test the auth route
-// @access PUBLIC
-router.get('/test', (req, res) => {
-	res.send('Working AUTH');
-});
-
 // @route  POST /api/auth/register
 // @desc Create a new User
 // @access PUBLIC
@@ -21,9 +14,7 @@ router.post('/register', async (req, res) => {
 	try {
 		const { errors, isValid } = validateRegisterInput(req.body);
 
-		if (!isValid) {
-			return res.status(400).json(errors);
-		}
+		if (!isValid) return res.status(400).json(errors);
 
 		const existingEmail = await User.findOne({ email: new RegExp('^' + req.body.email + '$', 'i') });
 
@@ -96,7 +87,7 @@ router.post('/login', async (req, res) => {
 // @desc RETURN the currently auth user
 // @access PRIVATE
 
-app.get('/current', requiresAuth, async (req, res) => {
+router.get('/current', requiresAuth, (req, res) => {
 	if (!req.user) {
 		return res.status(401).send('unauthorised');
 	}

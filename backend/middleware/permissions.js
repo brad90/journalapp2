@@ -32,3 +32,5 @@ const requiresAuth = async (req, res, next) => {
 		return res.status(401).send('Unauthorised');
 	}
 };
+
+module.exports = requiresAuth;
