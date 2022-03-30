@@ -1,6 +1,4 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-
 import styled from 'styled-components';
 
 export default function Navbar() {
@@ -24,7 +22,7 @@ export default function Navbar() {
 				<Link to='/login'>
 					<button className='btn'>
 						<a>
-							<h3>Sign in</h3>
+							<h3>Login</h3>
 						</a>
 					</button>
 				</Link>

@@ -29,6 +29,9 @@ export default function Dashboard() {
 			text-align: left;
 			border-radius: 1rem;
 			background-color: #f2f3fc
+box-shadow: -1px -1px 30px 0px rgba(145,145,145,0.04);
+-webkit-box-shadow: -1px -1px 30px 0px rgba(145,145,145,0.04);
+-moz-box-shadow: -1px -1px 30px 0px rgba(145,145,145,0.04);
 		}
 
 		.panel-flex {

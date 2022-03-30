@@ -1,29 +1,33 @@
 import { useState } from 'react';
-import GoogleLogin from 'react-google-login';
 import styled from 'styled-components';
-
-import Navbar from '../../components/Navbar/navbar';
+import axios from 'axios';
 
 export default function Login() {
-	const [type, setType] = useState('login');
+	const [isMember, setIsMember] = useState(true);
+	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [confirmPassword, setConfirmPassword] = useState('');
 
-	async function handleLogin(e: any) {
-		e.preventDefault();
-		const response = await fetch('http://localhost:1337/api/register', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email,
-				password,
-			}),
-		});
-
-		const data = response.json();
-		console.log(data);
+	async function handleLogin() {
+		const payload = {
+			name: name,
+			email: email,
+			password: password,
+			confirmPassword: confirmPassword,
+		};
+		try {
+			const response = await axios.post('http://localhost:5001/api/auth/register', payload, {
+				headers: {
+					'Content-Type': 'application/json',
+					'Access-Control-Allow-Origin': '*',
+				},
+			});
+			const data = await response.data;
+			return data.json();
+		} catch (error: any) {
+			console.log(error.response.data);
+		}
 	}
 
 	const FormContainer = styled.div`
@@ -62,8 +66,14 @@ export default function Login() {
 	return (
 		<FormContainer>
 			<div className='form-wrapper'>
-				<h3>{type == 'login' ? 'Login' : 'Sign Up'}</h3>
-				<form onSubmit={(e) => handleLogin(e)}>
+				<h3>{isMember ? 'Login' : 'Sign Up'}</h3>
+				<button onClick={() => handleLogin()}></button>
+				{/* <form onSubmit={(e) => handleLogin(e)}>
+					<span>
+						<label htmlFor='name'>Name:</label>
+						<br></br>
+						<input type='email' id='name' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} />
+					</span>
 					<span>
 						<label htmlFor='email'>Email:</label>
 						<br></br>
@@ -74,23 +84,34 @@ export default function Login() {
 						<br></br>
 						<input type='password' id='password' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
 					</span>
+					<span>
+						<label htmlFor='confirmpassword'>Confirm Password:</label>
+						<br></br>
+						<input type='password' id='confirmpassword' onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)} />
+					</span>
 					<input type='submit' value='Submit'></input>
-				</form>
-				<h3>Or</h3>
-				{/* <GoogleLogin
-					clientId='263574196362-g5ke9ipq1oa985kcq019g655v6slomfg.apps.googleusercontent.com'
-					buttonText='Login'
-					onSuccess={responseGoogle}
-					onFailure={responseGoogle}
-					cookiePolicy={'single_host_origin'}
-				/> */}
-				<p>Not got an account already? </p>{' '}
-				<a
-					onClick={() => {
-						setType('signup');
-					}}>
-					Sign up
-				</a>
+				</form> */}
+				{isMember && (
+					<div>
+						<p>Not already a member?</p>
+						<a
+							onClick={() => {
+								setIsMember(false);
+							}}>
+							Sign up
+						</a>
+					</div>
+				)}
+				{!isMember && (
+					<div>
+						<a
+							onClick={() => {
+								setIsMember(true);
+							}}>
+							Login
+						</a>
+					</div>
+				)}
 			</div>
 		</FormContainer>
 	);

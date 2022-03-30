@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { getLogs } from '../../api/api';
 import styled from 'styled-components';
 import JournalSidebar from '../../components/LogList/LogList';
 
@@ -14,7 +13,6 @@ export default function Journal() {
 
 	return (
 		<JournalContainer>
-			<button onClick={() => getLogs()}></button>
 			<JournalSidebar />
 		</JournalContainer>
 	);
