@@ -37,6 +37,9 @@ export const logsSlice = createSlice({
 	name: 'journallogs',
 	initialState,
 	reducers: {
+		setLogs: (state, action: PayloadAction<ILog[]>) => {
+			state.logs = action.payload;
+		},
 		setCurrentLogId: (state, action: PayloadAction<number>) => {
 			state.currentLogId = action.payload;
 		},

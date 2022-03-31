@@ -2,8 +2,8 @@ import React from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 
-import Landing from './Pages/Home/Home';
-import Login from './Pages/Login/Login';
+import Landing from './Pages/Home';
+import Login from './Pages/Auth';
 import Journal from './Pages/JournalList/JournalList';
 import LogEntry from './Pages/JournalEntry/JounralEntry';
 import Dashboard from './Pages/Dashboard/Dashboard';

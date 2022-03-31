@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import styled from 'styled-components';
-import JournalSidebar from '../../components/LogList/LogList';
+import JounalLogList from '../../components/LogList';
 
 export default function Journal() {
 	const JournalContainer = styled.div`
@@ -13,7 +13,7 @@ export default function Journal() {
 
 	return (
 		<JournalContainer>
-			<JournalSidebar />
+			<JounalLogList />
 		</JournalContainer>
 	);
 }

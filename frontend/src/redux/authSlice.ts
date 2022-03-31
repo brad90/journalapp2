@@ -1,57 +1,38 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface Login {
-	name: string;
-	email: string;
-	password: string;
-	confirmpassword: string;
+interface InitState {
+	isLoggedIn: boolean;
+	username: null | string;
+	userID: null | string;
 }
 
-const user = 'hello';
+interface User {
+	userID: string | null;
+	username: string;
+}
 
-const initialState = {
-	user: user ? user : null,
-	isError: false,
-	isSuccess: false,
-	isLoading: false,
-	message: '',
+const initialState: InitState = {
+	isLoggedIn: false,
+	username: null,
+	userID: null,
 };
-
-export const register = createAsyncThunk('auth/fetchLogin', async (user: Login) => {
-	try {
-		const response = await axios.post('http://localhost:5000/api/auth/register', user, { headers: { 'content-type': 'text/json', 'Access-Control-Allow-Origin': '*' } });
-		const data = await response.data;
-		return data;
-	} catch (error: any) {
-		const message = error.response && error.response.data;
-		// return thunkAPI.rejectWithValue(message);
-	}
-});
 
 export const authSlice = createSlice({
 	name: 'auth',
 	initialState,
-	// NOT ASYNC
 	reducers: {
-		reset: (state) => {
-			state.isLoading = state.isError = state.isSuccess = false;
-			state.message = '';
+		loginUser: (state, action: PayloadAction<User>) => {
+			state.isLoggedIn = true;
+			state.userID = action.payload.userID;
+			state.username = action.payload.username;
 		},
-	},
-	// ASYNC
-	extraReducers: (builder) => {
-		builder.addCase(register.pending, (state: any) => {
-			console.log('fetching exercises...');
-		});
-		builder.addCase(register.fulfilled, (state: any) => {
-			console.log('fetching exercises...');
-		});
-		builder.addCase(register.rejected, (state: any) => {
-			console.log('fetching exercises...');
-		});
+		logoutUser: (state) => {
+			state.isLoggedIn = false;
+			state.userID = null;
+			state.username = null;
+		},
 	},
 });
 
-export const { reset } = authSlice.actions;
+export const { loginUser, logoutUser } = authSlice.actions;
 export default authSlice.reducer;

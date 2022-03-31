@@ -5,7 +5,6 @@ const User = new mongoose.Schema(
 		name: { type: String, required: true },
 		email: { type: String, required: true },
 		password: { type: String, required: true },
-		terms: { type: String, required: false },
 	},
 	{
 		timestamps: true,
@@ -13,6 +12,6 @@ const User = new mongoose.Schema(
 	{ collection: 'logins' }
 );
 
-const model = mongoose.model('UserData', User);
+const model = mongoose.model('users', User);
 
 module.exports = model;

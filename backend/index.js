@@ -8,6 +8,7 @@ const cookieparser = require('cookie-parser');
 
 // IMPORT ROUTES
 const authRoute = require('./routes/auth');
+const logsRoute = require('./routes/logs');
 
 var corsOptions = {
 	origin: 'http://localhost:3000',
@@ -23,6 +24,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api/auth', authRoute);
+app.use('/api/logs', logsRoute);
 
 mongoose
 	.connect(process.env.MONGO_URI)
