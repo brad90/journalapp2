@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { RootState } from '../../redux/store';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
+import axios from 'axios';
 
 const JournalMain = styled.div`
 	display: flex;
@@ -62,8 +63,8 @@ const JournalMain = styled.div`
 `;
 
 export default function Journalmain() {
-	const { currentLogId, logs } = useSelector((state: RootState) => state.journallogs);
-	const currentLog = logs.find((log) => log.id === currentLogId);
+	const { currentLogID, logs } = useSelector((state: RootState) => state.journal);
+	const currentLog = logs.find((log) => log.id === currentLogID);
 	const countWords = (text: string | undefined) => {
 		return text?.split(' ').filter((str) => str != '').length || 0;
 	};
@@ -94,14 +95,36 @@ export default function Journalmain() {
 		return urlSplit[urlSplit.length - 1] === 'create' ? false : true;
 	};
 
+	const saveEntry = async () => {
+		const payload = {
+			userid: 123456,
+			title: title,
+			text: text,
+			datefrom: 'soif',
+		};
+
+		try {
+			const response = await axios.post('http://localhost:5001/api/logs/create', payload, {
+				headers: {
+					'Content-Type': 'application/json',
+					'Access-Control-Allow-Origin': '*',
+				},
+			});
+
+			const status = await response.status;
+			if (status === 200) {
+				navigate('/user/111/journal');
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
 	useEffect(() => {
 		setTitle(currentLog?.title || '');
 		setText(currentLog?.text || '');
 	}, [currentLog]);
 
-	console.log('@@@@@@ rendering', { title });
-
-	console.log(text, title);
 	return (
 		<JournalMain>
 			<div className='main-container'>
@@ -116,7 +139,9 @@ export default function Journalmain() {
 					<input type='text' placeholder='Title' maxLength={35} onChange={handleTitleInput} value={title} disabled={isNewEntry()} />
 					<textarea onChange={handleTextInput} required placeholder='Start Typing ...' value={text} disabled={isNewEntry()} />
 					<div className='complete'>
-						<button className={`btn ${wordCount > 0 ? 'btn-complete' : ''} ${isNewEntry() ? 'btn-hidden' : ''}`}>Complete</button>
+						<button onClick={() => saveEntry()} className={`btn ${wordCount > 0 ? 'btn-complete' : ''} ${isNewEntry() ? 'btn-hidden' : ''}`}>
+							Complete
+						</button>
 					</div>
 				</div>
 			</div>

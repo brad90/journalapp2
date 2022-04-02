@@ -1,14 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
 import { loginUser } from '../../redux/authSlice';
+import axios from 'axios';
 
 export default function Login() {
 	const navigate = useNavigate();
 	const [isMember, setIsMember] = useState(false);
+	const [errors, setErrors] = useState(false);
 	const [values, setValues] = useState({
 		name: '',
 		email: '',
@@ -16,13 +14,10 @@ export default function Login() {
 		confirmPassword: '',
 	});
 
-	const { isLoggedIn } = useSelector((state: RootState) => state.auth);
-
 	const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-
 		try {
-			const response = await axios.post(`http://localhost:5001/api/auth/login`, values, {
+			const response = await axios.post(`http://localhost:5001/api/auth/register`, values, {
 				headers: {
 					'Content-Type': 'application/json',
 					'Access-Control-Allow-Origin': '*',
@@ -33,9 +28,10 @@ export default function Login() {
 				userID: data._id,
 				username: data.name,
 			});
-			navigate('/user/111/dashboard');
+			navigate(`/user/${data.name}/dashboard`);
 		} catch (error: any) {
-			console.log(error.response.data);
+			console.log(error);
+			setErrors(true);
 		}
 	};
 
@@ -45,6 +41,7 @@ export default function Login() {
 
 	return (
 		<>
+			{errors && <p> We were unable to sign you in. Our team are working to resolve the issue. Please try again later.</p>}
 			<form onSubmit={onSubmit}>
 				<div>
 					<input name='name' id='username' type='text' placeholder='User Name' onChange={onChange} required />

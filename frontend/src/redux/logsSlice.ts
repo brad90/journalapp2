@@ -23,30 +23,27 @@ const options: ILog[] = [
 	{ id: 1239, type: LogType.Answer, title: '6Something happend today', text: 'Today was when i meant to the ....', date: new Date() },
 ];
 
-export interface ILogs {
-	logs: ILog[];
-	currentLogId: number | null;
-}
-
-const initialState: ILogs = {
+const initialState: { logs: [] | ILog[]; points: number; currentLogID: null | number } = {
 	logs: options || [],
-	currentLogId: null,
+	points: 0,
+	currentLogID: null,
 };
 
 export const logsSlice = createSlice({
-	name: 'journallogs',
+	name: 'journal',
 	initialState,
 	reducers: {
-		setLogs: (state, action: PayloadAction<ILog[]>) => {
+		setLogs: (state, action: PayloadAction<ILog[] | []>) => {
 			state.logs = action.payload;
+			state.points = action.payload.length;
 		},
 		setCurrentLogId: (state, action: PayloadAction<number>) => {
-			state.currentLogId = action.payload;
+			state.currentLogID = action.payload;
 		},
 	},
 });
 
 // Action creators are generated for each case reducer function
-export const { setCurrentLogId } = logsSlice.actions;
+export const { setCurrentLogId, setLogs } = logsSlice.actions;
 
 export default logsSlice.reducer;

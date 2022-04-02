@@ -47,30 +47,50 @@ const LogListContainer = styled.ul`
 `;
 
 export default function JounrnalSidebar() {
-	const { logs } = useSelector((state: RootState) => state.journallogs);
+	const { logs } = useSelector((state: RootState) => state.journal);
 	const [isLoading, setIsLoading] = useState(true);
 	const [searchWord, setSearchWord] = useState('');
 
-	const fetchLogs = async () => {
-		const userid = 'soisjoij';
-		const count = 10;
+	// const fetchLogs = async () => {
+	// 	const userid = 'soisjoij';
+	// 	const count = 10;
 
-		try {
-			const response = await axios.get(`http://localhost:5001/api/logs?userid=${userid}count=${count}`, {
-				headers: {
-					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
-				},
-			});
-			const data = await response.data;
-		} catch (error: any) {
-			console.log(error.response.data);
+	// 	try {
+	// 		const response = await axios.get(`http://localhost:5001/api/logs?userid=${userid}count=${count}`, {
+	// 			headers: {
+	// 				'Content-Type': 'application/json',
+	// 				'Access-Control-Allow-Origin': '*',
+	// 			},
+	// 		});
+	// 		const data = await response.data;
+	// 	} catch (error: any) {
+	// 		console.log(error.response.data);
+	// 	}
+	// };
+
+	// useEffect(() => {
+	// 	fetchLogs();
+	// }, []);
+
+	const renderListItems = () => {
+		if (logs.length != 0) {
+			return (
+				<div className='sidebar-scroll'>
+					{logs
+						.filter((log) => log.title.includes(searchWord))
+						.map((log: ILog) => {
+							return <ListItem log={log} key={log.id} />;
+						})}
+				</div>
+			);
+		} else {
+			return (
+				<div>
+					<p>No logs... time to start writing</p>
+				</div>
+			);
 		}
 	};
-
-	useEffect(() => {
-		fetchLogs();
-	}, []);
 
 	return (
 		<LogListContainer>
@@ -87,13 +107,7 @@ export default function JounrnalSidebar() {
 					</Link>
 				</div>
 			</div>
-			<div className='sidebar-scroll'>
-				{logs
-					.filter((log) => log.title.includes(searchWord))
-					.map((log: ILog) => {
-						return <ListItem log={log} key={log.id} />;
-					})}
-			</div>
+			<div className='sidebar-scroll'>{renderListItems()}</div>
 		</LogListContainer>
 	);
 }

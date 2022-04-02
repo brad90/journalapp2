@@ -1,32 +1,47 @@
 const express = require('express');
+const router = express.Router();
+
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr('myTotalySecretKey');
-const router = express.Router();
-const Log = require('../models/Log');
+const Logs = require('../models/Logs');
 
-router.get('/', async (req, res) => {
-	const userLogs = await Log.find({ userid: req.body.userid }).sort({ date: -1 });
+// @route  POST /api/logs/fetch
+// @desc Fetch Logs from users
+// @access PUBLIC
+router.post('/fetch', async (req, res) => {
+	try {
+		const userLogs = await Logs.find({ userid: req.body.userid });
 
-	if (!userLogs) return res.status(200).json([]);
+		if (!userLogs) return res.status(200).json([]);
 
-	const logs = userLogs.map((log) => {
-		log.title = cryptr.decrypt(log.title);
-		log.text = cryptr.decrypt(log.text);
-	});
+		const logs = userLogs.map((log) => {
+			log.title = cryptr.decrypt(log.title);
+			log.text = cryptr.decrypt(log.text);
+		});
 
-	return res.json(logs);
+		return res.json(logs);
+	} catch (err) {
+		return res.status(500).json({ error: 'Unable to fetch logs' });
+	}
 });
 
 router.post('/create', async (req, res) => {
-	const newLog = new Log({
-		title: cryptr.encrypt(req.body.title),
-		text: cryptr.encrypt(req.body.text),
-		userid: req.body.userid,
-		date: new Date(),
-	});
+	return res.status(500).json({ error: req.body });
+	try {
+		const newLog = new Logs({
+			title: cryptr.encrypt(req.body.title),
+			text: cryptr.encrypt(req.body.text),
+			userid: req.body.userid,
+			dateto: new Date(),
+			datefrom: req.body.datefrom,
+		});
 
-	const savedLog = await newLog.save();
-	return res.json(savedLog);
+		const savedLog = await newLog.save();
+
+		if (savedLog) return res.status(200);
+	} catch (err) {
+		return res.status(500).json({ error: 'Unable to save log' });
+	}
 });
 
 module.exports = router;

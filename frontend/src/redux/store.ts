@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 
 export const store = configureStore({
 	reducer: {
-		journallogs: logsReducer,
+		journal: logsReducer,
 		auth: authReducer,
 	},
 });
